@@ -89,6 +89,7 @@ pipeline {
 
             steps {
                 sh '''
+                    echo "small changes" 
                     netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status
