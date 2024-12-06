@@ -130,30 +130,31 @@ pipeline {
                 '''
             }
 
-            stage('AWS'){
-                agent {
-                    docker {
-                        image 'amazon/aws-cli'
-                        reuseNode true
-                        args "--entrypoint=''"
-                    }
-                }
-                environment{
-                    AWS_S3_BUCKET = 'learn-jenkins-nba'
-                }
-                steps {
-                    withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                        sh '''
-                            aws --version
-                            aws s3 sync . s3://$AWS_S3_BUCKET
-                        '''
-                    }
-                }
-            }
 
             post {
                 always {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
+
+        stage('AWS'){
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+            environment{
+                AWS_S3_BUCKET = 'learn-jenkins-nba'
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 sync . s3://$AWS_S3_BUCKET
+                    '''
                 }
             }
         }
