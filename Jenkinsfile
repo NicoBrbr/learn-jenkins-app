@@ -24,28 +24,7 @@ pipeline {
                     ls -la
                 '''
             }
-        }
-
-        stage('AWS'){
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    reuseNode true
-                    args "--entrypoint=''"
-                }
-            }
-            environment{
-                AWS_S3_BUCKET = 'learn-jenkins-nba'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        aws --version
-                        aws s3 sync . s3://$AWS_S3_BUCKET
-                    '''
-                }
-            }
-        }
+        }       
 
         stage('Tests') {
             parallel {
@@ -126,28 +105,26 @@ pipeline {
             }
         }
 
-        stage('Deploy prod') {
+        stage('AWS'){
             agent {
                 docker {
-                    image 'my-playwright'
+                    image 'amazon/aws-cli'
                     reuseNode true
+                    args "--entrypoint=''"
                 }
             }
-
-            environment {
-                CI_ENVIRONMENT_URL = 'https://leafy-trifle-e93695.netlify.app'
+            environment{
+                AWS_S3_BUCKET = 'learn-jenkins-nba'
             }
-
             steps {
-                sh '''
-                    node --version
-                    netlify --version
-                    echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-                    netlify status
-                    netlify deploy --dir=build --prod
-                    npx playwright test  --reporter=html
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 sync . s3://$AWS_S3_BUCKET
+                    '''
+                }
             }
+        }
 
             post {
                 always {
