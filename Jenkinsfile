@@ -46,9 +46,8 @@ pipeline {
                     npm run build
                     ls -la
                 '''
+                /* trigger jenkins 1*/
             }
         }
     }
 }
-
-/* trigger jenkins 1*/
