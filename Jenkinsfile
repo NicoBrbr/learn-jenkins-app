@@ -19,8 +19,9 @@ pipeline {
                     ls -la
                     node --version
                     npm --version
+                    echo "Building app with version: $REACT_APP_VERSION"        
+                    rm -rf build/
                     npm ci
-                    echo "Building app with version: $REACT_APP_VERSION"
                     npm run build
                     ls -la
                 '''
