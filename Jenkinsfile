@@ -62,7 +62,6 @@ pipeline {
 
                     steps {
                         sh '''
-                            echo 'small change'
                             serve -s build &
                             sleep 10
                             npx playwright test  --reporter=html
