@@ -51,7 +51,7 @@ pipeline {
                     }
                 }
 
-                stage('E2E') {
+/*                 stage('E2E') {
                     agent {
                         docker {
                             image 'my-playwright'
@@ -65,13 +65,13 @@ pipeline {
                             sleep 10
                             npx playwright test  --reporter=html
                         '''
-                    }
+                    } */
 
-                    post {
+/*                     post {
                         always {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Local E2E', reportTitles: '', useWrapperFileDirectly: true])
-                        }
-                    }
+                        } 
+                    }*/
                 }
             }
         }
@@ -90,7 +90,6 @@ pipeline {
 
             steps {
                 sh '''
-                    echo "small changes" 
                     netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status
