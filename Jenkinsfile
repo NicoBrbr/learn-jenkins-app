@@ -20,6 +20,7 @@ pipeline {
                     node --version
                     npm --version
                     npm ci
+                    echo "Building app with version: $REACT_APP_VERSION"
                     npm run build
                     ls -la
                 '''
@@ -59,7 +60,7 @@ pipeline {
 
                     steps {
                         sh '''
-                            echo 'Small Change'
+                            echo "Building app with version: $REACT_APP_VERSION"
                             serve -s build &
                             sleep 10
                             npx playwright test  --reporter=html
